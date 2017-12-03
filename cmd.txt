@@ -1,0 +1,273 @@
+## Create a new project called 'dojo_ninjas'
+
+rails new dojo_ninjas
+
+------------------
+
+## Dojo
+Have it include the name of the dojo and the city and state of each dojo
+
+rails g model Dojo name:string city:string state:string
+
+
+------------
+## Ninja
+
+
+Ninja
+Have it include first_name, last_name of each ninja in the dojo.(one to many relationship)
+
+
+rails g model Ninja first_name:string last_name:string dojo:references
+
+--------------
+
+## Using Ruby console:
+Create 3 dojos (insert some blank entries just to make sure it's allowing you to insert empty entries)
+
+
+Dojo.create(name: "CodingDojo Silicon Valley", city: "Mountain View", state: "CA")
+Dojo.create(name:"CodingDojo Seattle",city:"Seattle",state:"WA")
+Dojo.create(name:"Coding Dojo New York",city:"NewYOrk",state:"NY")
+
+--------------
+## Change your models so that it does the following validations:
+-For the dojo, require the presence of the name, city, and state; also require the state to be two characters long
+-For the ninja, require the presence of the first name and last name
+-Make sure that your ninja model belongs to the dojo (specify this in the model for both the dojo and the ninja)
+
+class Dojo < ActiveRecord::
+    validates :name,:city,:state presence:true
+    validates :state, length:{is:2}
+    has_many :ninjas
+end
+
+
+class Ninja < ActiveRecord::Base
+  belongs_to :dojo
+  validates :first_name, :last_name, presence:true
+end
+-----------------
+
+## Using ruby console
+Delete the three dojos you created (e.g. Dojo.find(1).destroy; also look up destroy_all method)
+
+
+Dojo.destroy_all
+
+----------
+
+## Create 3 additional dojos by using Dojo.new.
+
+dojo1 = Dojo.new(name: "CodingDojo SanJose", city: "SanJose", state: "CA")
+dojo1.save
+
+dojo2 = Dojo.new(name: "CodingDojo Dallas", city: "Dallas", state: "TX")
+dojo2.save
+
+dojo3 = Dojo.new(name: "CodingDojo Brooklyn", city: "Brooklyn", state: "NY")
+dojo3.save
+
+
+
+Dojo.all
+  Dojo Load (2.0ms)  SELECT "dojos".* FROM "dojos"
++----+---------------------+----------+-------+-------------------------+-------------------------+
+| id | name                | city     | state | created_at              | updated_at              |
++----+---------------------+----------+-------+-------------------------+-------------------------+
+| 4  | CodingDojo SanJose  | SanJose  | CA    | 2017-12-03 20:59:03 UTC | 2017-12-03 20:59:03 UTC |
+| 5  | CodingDojo Dallas   | Dallas   | TX    | 2017-12-03 20:59:39 UTC | 2017-12-03 20:59:39 UTC |
+| 6  | CodingDojo Brooklyn | Brooklyn | NY    | 2017-12-03 21:01:14 UTC | 2017-12-03 21:01:14 UTC |
++----+---------------------+----------+-------+-------------------------+-------------------------+
+3 rows in set
+
+----------
+
+
+## Try to create a few more dojos but without specifying some of the required fields. Make sure that the validation works and generates the errors.
+
+
+> Dojo.create().errors
+   (0.2ms)  begin transaction
+   (0.1ms)  rollback transaction
+ => #<ActiveModel::Errors:0x0000000435f738 @base=#<Dojo id: nil, name: nil, city: nil, state: nil, created_at: nil, updated_at: nil>, @messages={:name=>["can't be blank"], :city=>["can't be blank"], :state=>["can't be blank", "is the wrong length (should be 2 characters)"]}> 
+
+~~~~~
+
+ Dojo.create(name:"CodingDojo Seattle",city:"Seattle",state:"C").errors
+   (0.1ms)  begin transaction
+   (0.1ms)  rollback transaction
+ => #<ActiveModel::Errors:0x0000000426eb30 @base=#<Dojo id: nil, name: "CodingDojo Seattle", city: "Seattle", state: "C", created_at: nil, updated_at: nil>, @messages={:state=>["is the wrong length (should be 2 characters)"]}> 
+
+---------------
+
+
+## Create 3 ninjas that belong to the first dojo you created.
+
+Dojo.first.ninjas.create(first_name: "neethu",last_name: "reddy")
+Dojo.first.ninjas.create(first_name: "anjali",last_name: "reddy")
+Dojo.first.ninjas.create(first_name: "shamili",last_name: "reddy")
+Ninja.all
+  Ninja Load (3.1ms)  SELECT "ninjas".* FROM "ninjas"
++----+------------+-----------+---------+-------------------------+-------------------------+
+| id | first_name | last_name | dojo_id | created_at              | updated_at              |
++----+------------+-----------+---------+-------------------------+-------------------------+
+| 1  | neethu     | reddy     | 4       | 2017-12-03 22:26:56 UTC | 2017-12-03 22:26:56 UTC |
+| 2  | anjali     | reddy     | 4       | 2017-12-03 22:27:23 UTC | 2017-12-03 22:27:23 UTC |
+| 3  | shamili    | reddy     | 4       | 2017-12-03 22:27:31 UTC | 2017-12-03 22:27:31 UTC |
++----+------------+-----------+---------+-------------------------+-------------------------+
+3 rows in set
+---------
+
+## Create 3 more ninjas and have them belong to the second dojo you created.
+
+Dojo.second.ninjas.create(first_name: "chintu",last_name: "reddy")
+Dojo.second.ninjas.create(first_name: "bunty",last_name: "reddy")
+Dojo.second.ninjas.create(first_name: "nikki",last_name: "reddy")
+
+------------
+## Create 3 more ninjas and have them belong to the third dojo you created.
+
+
+Dojo.third.ninjas.create(first_name: "kool",last_name: "reddy")
+Dojo.third.ninjas.create(first_name: "hey",last_name: "reddy")
+Dojo.third.ninjas.create(first_name: "hema",last_name: "reddy")
+
+=----------
+
+## Make sure you understand how to get all of the ninjas for any dojo (e.g. get all the ninjas for the first dojo, second dojo, etc).
+
+
+Ninja.all
+  Ninja Load (2.1ms)  SELECT "ninjas".* FROM "ninjas"
++----+------------+-----------+---------+-------------------------+-------------------------+
+| id | first_name | last_name | dojo_id | created_at              | updated_at              |
++----+------------+-----------+---------+-------------------------+-------------------------+
+| 1  | neethu     | reddy     | 4       | 2017-12-03 22:26:56 UTC | 2017-12-03 22:26:56 UTC |
+| 2  | anjali     | reddy     | 4       | 2017-12-03 22:27:23 UTC | 2017-12-03 22:27:23 UTC |
+| 3  | shamili    | reddy     | 4       | 2017-12-03 22:27:31 UTC | 2017-12-03 22:27:31 UTC |
+| 4  | chintu     | reddy     | 5       | 2017-12-03 22:35:01 UTC | 2017-12-03 22:35:01 UTC |
+| 5  | bunty      | reddy     | 5       | 2017-12-03 22:35:15 UTC | 2017-12-03 22:35:15 UTC |
+| 6  | nikki      | reddy     | 5       | 2017-12-03 22:35:26 UTC | 2017-12-03 22:35:26 UTC |
+| 7  | kool       | reddy     | 6       | 2017-12-03 22:37:13 UTC | 2017-12-03 22:37:13 UTC |
+| 8  | hey        | reddy     | 6       | 2017-12-03 22:37:24 UTC | 2017-12-03 22:37:24 UTC |
+| 9  | hema       | reddy     | 6       | 2017-12-03 22:37:31 UTC | 2017-12-03 22:37:31 UTC |
++----+------------+-----------+---------+-------------------------+-------------------------+
+9 rows in set
+
+
+
+Dojo.first.ninjas
+  Dojo Load (1.8ms)  SELECT  "dojos".* FROM "dojos"  ORDER BY "dojos"."id" ASC LIMIT 1
+  Ninja Load (1.3ms)  SELECT "ninjas".* FROM "ninjas" WHERE "ninjas"."dojo_id" = ?  [["dojo_id", 4]]
++----+------------+-----------+---------+-------------------------+-------------------------+
+| id | first_name | last_name | dojo_id | created_at              | updated_at              |
++----+------------+-----------+---------+-------------------------+-------------------------+
+| 1  | neethu     | reddy     | 4       | 2017-12-03 22:26:56 UTC | 2017-12-03 22:26:56 UTC |
+| 2  | anjali     | reddy     | 4       | 2017-12-03 22:27:23 UTC | 2017-12-03 22:27:23 UTC |
+| 3  | shamili    | reddy     | 4       | 2017-12-03 22:27:31 UTC | 2017-12-03 22:27:31 UTC |
++----+------------+-----------+---------+-------------------------+-------------------------+
+3 rows in set
+
+
+Dojo.second.ninjas
+  Dojo Load (2.0ms)  SELECT  "dojos".* FROM "dojos"  ORDER BY "dojos"."id" ASC LIMIT 1 OFFSET 1
+  Ninja Load (1.2ms)  SELECT "ninjas".* FROM "ninjas" WHERE "ninjas"."dojo_id" = ?  [["dojo_id", 5]]
++----+------------+-----------+---------+-------------------------+-------------------------+
+| id | first_name | last_name | dojo_id | created_at              | updated_at              |
++----+------------+-----------+---------+-------------------------+-------------------------+
+| 4  | chintu     | reddy     | 5       | 2017-12-03 22:35:01 UTC | 2017-12-03 22:35:01 UTC |
+| 5  | bunty      | reddy     | 5       | 2017-12-03 22:35:15 UTC | 2017-12-03 22:35:15 UTC |
+| 6  | nikki      | reddy     | 5       | 2017-12-03 22:35:26 UTC | 2017-12-03 22:35:26 UTC |
++----+------------+-----------+---------+-------------------------+-------------------------+
+3 rows in set
+
+
+Dojo.third.ninjas
+  Dojo Load (2.0ms)  SELECT  "dojos".* FROM "dojos"  ORDER BY "dojos"."id" ASC LIMIT 1 OFFSET 2
+  Ninja Load (1.5ms)  SELECT "ninjas".* FROM "ninjas" WHERE "ninjas"."dojo_id" = ?  [["dojo_id", 6]]
++----+------------+-----------+---------+-------------------------+-------------------------+
+| id | first_name | last_name | dojo_id | created_at              | updated_at              |
++----+------------+-----------+---------+-------------------------+-------------------------+
+| 7  | kool       | reddy     | 6       | 2017-12-03 22:37:13 UTC | 2017-12-03 22:37:13 UTC |
+| 8  | hey        | reddy     | 6       | 2017-12-03 22:37:24 UTC | 2017-12-03 22:37:24 UTC |
+| 9  | hema       | reddy     | 6       | 2017-12-03 22:37:31 UTC | 2017-12-03 22:37:31 UTC |
++----+------------+-----------+---------+-------------------------+-------------------------+
+3 rows in set
+
+---------------
+
+## How would you only retrieve the first_name of the ninjas that belong to the second dojo and order the result by created_at DESC order?
+
+
+Ninja.where(dojo: Dojo.second).select(:id,:first_name).order(created_at: :desc)
+  Dojo Load (2.0ms)  SELECT  "dojos".* FROM "dojos"  ORDER BY "dojos"."id" ASC LIMIT 1 OFFSET 1
+  Ninja Load (1.2ms)  SELECT "ninjas"."id", "ninjas"."first_name" FROM "ninjas" WHERE "ninjas"."dojo_id" = 5  ORDER BY "ninjas"."created_at" DESC
++----+------------+
+| id | first_name |
++----+------------+
+| 6  | nikki      |
+| 5  | bunty      |
+| 4  | chintu     |
++----+------------+
+3 rows in set
+
+ Ninja.where(dojo: Dojo.second).select(:first_name).order(created_at: :desc)
+  Dojo Load (2.3ms)  SELECT  "dojos".* FROM "dojos"  ORDER BY "dojos"."id" ASC LIMIT 1 OFFSET 1
+  Ninja Load (1.5ms)  SELECT "ninjas"."first_name" FROM "ninjas" WHERE "ninjas"."dojo_id" = 5  ORDER BY "ninjas"."created_at" DESC
++----+------------+
+| id | first_name |
++----+------------+
+|    | nikki      |
+|    | bunty      |
+|    | chintu     |
++----+------------+
+3 rows in set
+
+
+Ninja.all
+  Ninja Load (2.0ms)  SELECT "ninjas".* FROM "ninjas"
++----+------------+-----------+---------+-------------------------+-------------------------+
+| id | first_name | last_name | dojo_id | created_at              | updated_at              |
++----+------------+-----------+---------+-------------------------+-------------------------+
+| 1  | neethu     | reddy     | 4       | 2017-12-03 22:26:56 UTC | 2017-12-03 22:26:56 UTC |
+| 2  | anjali     | reddy     | 4       | 2017-12-03 22:27:23 UTC | 2017-12-03 22:27:23 UTC |
+| 3  | shamili    | reddy     | 4       | 2017-12-03 22:27:31 UTC | 2017-12-03 22:27:31 UTC |
+| 4  | chintu     | reddy     | 5       | 2017-12-03 22:35:01 UTC | 2017-12-03 22:35:01 UTC |
+| 5  | bunty      | reddy     | 5       | 2017-12-03 22:35:15 UTC | 2017-12-03 22:35:15 UTC |
+| 6  | nikki      | reddy     | 5       | 2017-12-03 22:35:26 UTC | 2017-12-03 22:35:26 UTC |
+| 7  | kool       | reddy     | 6       | 2017-12-03 22:37:13 UTC | 2017-12-03 22:37:13 UTC |
+| 8  | hey        | reddy     | 6       | 2017-12-03 22:37:24 UTC | 2017-12-03 22:37:24 UTC |
+| 9  | hema       | reddy     | 6       | 2017-12-03 22:37:31 UTC | 2017-12-03 22:37:31 UTC |
++----+------------+-----------+---------+-------------------------+-------------------------+
+9 rows in set
+
+--------------
+
+## Delete the second dojo. How could you adjust your model so that it automatically removes all of the ninjas associated with that dojo?
+
+class Dojo < ActiveRecord::Base
+    validates :name,:city,:state , presence: true
+    validates :state, length:{is:2}
+    has_many :ninjas,dependent: :destroy
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
